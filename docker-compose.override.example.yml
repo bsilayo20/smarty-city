@@ -1,0 +1,24 @@
+# Example override file for local development
+# Copy to docker-compose.override.yml and customize
+# This file is automatically merged with docker-compose.yml
+
+version: '3.8'
+
+services:
+  api_gateway:
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+    environment:
+      - ENVIRONMENT=development
+    # Override command for development with auto-reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true  # For file watching on some systems

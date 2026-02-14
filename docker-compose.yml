@@ -1,0 +1,259 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with PostGIS
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: smartcity_postgres
+    environment:
+      POSTGRES_DB: smartcity_db
+      POSTGRES_USER: smartcity_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartcity_pass_2024}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - smartcity_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartcity_user -d smartcity_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: smartcity_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-smartcity_user}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-smartcity_pass_2024}
+      MONGO_INITDB_DATABASE: smartcity_unstructured
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./backend/database/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - smartcity_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/smartcity_unstructured --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: smartcity_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - smartcity_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Ollama for local LLM (Llama 3)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: smartcity_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - smartcity_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    # Uncomment if you have NVIDIA GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # FastAPI Backend - Main API Gateway
+  api_gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartcity_api_gateway
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=smartcity_db
+      - POSTGRES_USER=smartcity_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-smartcity_pass_2024}
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - MONGODB_USER=${MONGO_USER:-smartcity_user}
+      - MONGODB_PASSWORD=${MONGO_PASSWORD:-smartcity_pass_2024}
+      - MONGODB_DB=smartcity_unstructured
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-super-secret-jwt-key-change-this-in-production}
+      - JWT_ALGORITHM=HS256
+      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - AES_KEY=${AES_KEY:-32-byte-key-for-aes-256-encryption!!}
+      - ENVIRONMENT=development
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+      - INGESTION_SCHEDULE=${INGESTION_SCHEDULE:-0 */6 * * *}
+      - DATA_SOURCE_RETRY_ATTEMPTS=3
+      - DATA_SOURCE_TIMEOUT=30
+      - LOG_RETENTION_DAYS=30
+      - CLEANUP_SCHEDULE=${CLEANUP_SCHEDULE:-0 2 * * *}
+      - TANZANIA_OPEN_DATA_BASE_URL=${TANZANIA_OPEN_DATA_BASE_URL:-https://www.opendata.go.tz}
+      - TANZANIA_GOV_API_URL=${TANZANIA_GOV_API_URL:-https://api.tanzania.go.tz}
+      - NBS_API_URL=${NBS_API_URL:-https://www.nbs.go.tz/api}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+      - backend_python_cache:/root/.cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - smartcity_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend - Next.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN:-}
+    container_name: smartcity_frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN:-}
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - api_gateway
+    networks:
+      - smartcity_network
+    command: npm run dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Data Ingestion Service (Scheduler)
+  data_ingestion:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartcity_data_ingestion
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=smartcity_db
+      - POSTGRES_USER=smartcity_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-smartcity_pass_2024}
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - MONGODB_USER=${MONGO_USER:-smartcity_user}
+      - MONGODB_PASSWORD=${MONGO_PASSWORD:-smartcity_pass_2024}
+      - MONGODB_DB=smartcity_unstructured
+      - API_GATEWAY_URL=http://api_gateway:8000
+      - INGESTION_SCHEDULE=${INGESTION_SCHEDULE:-0 */6 * * *}
+      - DATA_SOURCE_RETRY_ATTEMPTS=3
+      - DATA_SOURCE_TIMEOUT=30
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+      - backend_python_cache:/root/.cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      api_gateway:
+        condition: service_healthy
+    networks:
+      - smartcity_network
+    command: python -m services.data_ingestion.scheduler
+    restart: unless-stopped
+
+  # Cleanup Service (Automated log shredding)
+  cleanup_service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartcity_cleanup
+    environment:
+      - LOG_RETENTION_DAYS=${LOG_RETENTION_DAYS:-30}
+      - CLEANUP_SCHEDULE=${CLEANUP_SCHEDULE:-0 2 * * *}
+      - LOG_DIR=/app/logs
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+    networks:
+      - smartcity_network
+    command: python -m services.cleanup.scheduler
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  backend_python_cache:
+    driver: local
+  frontend_node_modules:
+    driver: local
+
+networks:
+  smartcity_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
