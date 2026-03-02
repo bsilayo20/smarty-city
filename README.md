@@ -1,6 +1,6 @@
 # Smart City FIS - Federated Integrated System
 
-A comprehensive Federated Integrated System (FIS) for Smart City management in Tanzania, featuring microservices architecture, AI-powered analytics, and real-time resource distribution visualization.
+A comprehensive Federated Integrated System (FIS) for Smart City management in Tanzania, featuring microservices architecture, AI powered analytics, and real-time resource distribution visualization.
 
 ## 🏗️ Architecture
 
@@ -334,7 +334,7 @@ For production:
 
 ## 📄 License
 
-[Add your license here]
+[brian      ]
 
 ## 👥 Contributors
 
@@ -342,4 +342,4 @@ For production:
 
 ## 📞 Support
 
-[Add support contact information]
+[bsilayo20@gmail.com]
