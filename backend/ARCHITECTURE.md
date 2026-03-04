@@ -6,46 +6,53 @@ The backend is organized as a modular microservices architecture with the follow
 
 ```
 backend/
+│
 ├── app/
-│   ├── core/              # Core infrastructure
-│   │   ├── config.py      # Configuration
-│   │   ├── dependencies.py # Shared dependencies
-│   │   ├── exceptions.py  # Custom exceptions & handlers
-│   │   └── middleware.py  # Custom middleware
 │   ├── api/
-│   │   └── v1/           # API v1 routes
-│   │       ├── auth.py    # Authentication endpoints
-│   │       ├── resources.py # Resource endpoints
-│   │       ├── analytics.py # Analytics endpoints
-│   │       ├── ingestion.py # Data ingestion endpoints
-│   │       └── health.py  # Health check endpoints
-│   └── services/          # Business logic services
-│       ├── auth/          # Authentication service
-│       │   ├── models.py  # User, Role, Permission models
-│       │   ├── service.py # Auth business logic
-│       │   ├── dependencies.py # Auth dependencies
-│       │   └── utils.py   # Encryption utilities
-│       ├── resources/     # Resources service
-│       │   ├── models.py  # Resource models
-│       │   └── service.py # Resource business logic
-│       ├── analytics/     # Analytics service
-│       │   └── service.py # Analytics business logic
-│       ├── data_ingestion/ # Data ingestion service
-│       │   ├── sources.py # Data source configurations
-│       │   ├── fetcher.py # Data fetching logic
-│       │   └── scheduler.py # Scheduled ingestion
-│       └── database/      # Database utilities
-│           ├── postgres.py # PostgreSQL connection
-│           └── mongodb.py  # MongoDB connection
-├── main.py               # Application entry point
-└── config.py            # Global configuration
-```
+│   │   ├── deps.py
+│   │   ├── auth.py
+│   │   ├── chat.py
+│   │   ├── admin.py
+│   │   └── health.py
+│   │
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── security.py
+│   │   └── logging.py
+│   │
+│   ├── db/
+│   │   ├── base.py
+│   │   ├── session.py
+│   │   └── init_db.py
+│   │
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── role.py
+│   │   ├── chat.py
+│   │   └── usage.py
+│   │
+│   ├── schemas/
+│   │   ├── user.py
+│   │   ├── auth.py
+│   │   ├── chat.py
+│   │   └── admin.py
+│   │
+│   ├── services/
+│   │   ├── ai_service.py
+│   │   ├── auth_service.py
+│   │   └── admin_service.py
+│   │
+│   └── main.py
+│
+├── alembic/
+│
+├── tests/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── .env.example
 
-## Architecture Principles
-
-### 1. Separation of Concerns
-- **API Layer**: Handles HTTP requests/responses, validation
-- **Service Layer**: Contains business logic
 - **Data Layer**: Database access and models
 
 ### 2. Dependency Injection
