@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arusha Smart City Data Link System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet (for map placeholder) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    defer
+  ></script>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="flag-strip"></div>
+        <h1>Arusha Smart City</h1>
+        <p>Mfumo wa Data Link</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="overview">Overview</a>
+        <a href="#" class="nav-item" data-section="map">Ramani</a>
+        <a href="#" class="nav-item" data-section="health">Afya</a>
+        <a href="#" class="nav-item" data-section="education">Elimu</a>
+        <a href="#" class="nav-item" data-section="assistant">AI Assistant</a>
+      </nav>
+      <div class="sidebar-footer">
+        <small>Serikali ya Jiji la Arusha</small>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div>
+          <h2>Dashibodi ya Data - Arusha</h2>
+          <p>Muunganiko wa data za shule, vituo vya afya, idadi ya watu na hali ya hewa.</p>
+        </div>
+        <div class="topbar-meta">
+          <span id="current-datetime"></span>
+          <span class="badge-live">LIVE DATA (Demo)</span>
+        </div>
+      </header>
+
+      <!-- Hero + Stats -->
+      <section class="hero">
+        <div class="hero-map-card">
+          <div class="card-header">
+            <h3>Ramani ya Arusha (Demo)</h3>
+            <span class="card-subtitle">Shule, vituo vya afya na vitongoji vyenye msongamano</span>
+          </div>
+          <div id="map" class="map-placeholder"></div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <h4>Hali ya Hewa</h4>
+            <p class="stat-value" id="stat-temp">-- °C</p>
+            <p class="stat-detail" id="stat-weather-desc">Inapakia...</p>
+          </div>
+          <div class="stat-card">
+            <h4>Idadi ya Watu (Makadirio)</h4>
+            <p class="stat-value" id="stat-population">--</p>
+            <p class="stat-detail" id="stat-hotspot-ward">Kata zenye ongezeko kubwa…</p>
+          </div>
+          <div class="stat-card">
+            <h4>Taarifa za Haraka</h4>
+            <p class="stat-value" id="stat-alerts-count">0</p>
+            <p class="stat-detail">Tahadhari za afya / mafuriko</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detail Panels -->
+      <section class="panels">
+        <div class="panel" id="panel-health">
+          <div class="panel-header">
+            <h3>Vituo vya Afya</h3>
+            <span class="panel-subtitle">Hospitali na huduma maalumu</span>
+          </div>
+          <table class="data-table" id="health-table">
+            <thead>
+              <tr>
+                <th>Jina</th>
+                <th>Wilaya</th>
+                <th>Kata</th>
+                <th>Vitanda</th>
+                <th>Huduma Maalumu</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="panel" id="panel-education">
+          <div class="panel-header">
+            <h3>Vituo vya Elimu</h3>
+            <span class="panel-subtitle">Uwezo wa wanafunzi na uwiano mwalimu-mwanafunzi</span>
+          </div>
+          <table class="data-table" id="education-table">
+            <thead>
+              <tr>
+                <th>Jina</th>
+                <th>Wilaya</th>
+                <th>Kata</th>
+                <th>Uwezo</th>
+                <th>Uwiano Mwalimu:Mwanafunzi</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- AI Chat Assistant -->
+    <section class="chat-assistant" id="chat-assistant">
+      <header class="chat-header">
+        <h3>AI Mshauri wa Smart City</h3>
+        <span class="chat-status">Online · Inachambua takwimu za Arusha</span>
+      </header>
+      <div class="chat-body" id="chat-body">
+        <div class="chat-message bot">
+          <div class="chat-badge">AI</div>
+          <div class="chat-bubble">
+            Karibu kwenye Mfumo wa Data wa Jiji la Arusha. Uliza maswali kama:
+            <ul>
+              <li>"Ni maeneo yapi yana ongezeko kubwa la watu?"</li>
+              <li>"Hali ya hewa ikoje Karatu leo?"</li>
+              <li>"Je, kuna hitaji la kuongeza vituo vya afya wapi?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <form class="chat-input-row" id="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Andika swali lako hapa..."
+          autocomplete="off"
+        />
+        <button type="submit">Tuma</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "region": "Arusha",
+    "country": "Tanzania",
+    "generated_at": "2026-03-07T10:00:00Z",
+    "source": "AI-synthesized demo data"
+  },
+  "districts": [
+    { "id": 1, "name": "Arusha City", "code": "ARU", "region": "Arusha" },
+    { "id": 2, "name": "Meru", "code": "MER", "region": "Arusha" },
+    { "id": 3, "name": "Karatu", "code": "KAR", "region": "Arusha" },
+    { "id": 4, "name": "Monduli", "code": "MON", "region": "Arusha" }
+  ],
+  "education_centers": [
+    {
+      "id": 1,
+      "name": "Arusha Secondary School",
+      "district_code": "ARU",
+      "ward": "Sokon I",
+      "lat": -3.3695,
+      "lng": 36.6864,
+      "student_capacity": 1200,
+      "teachers": 60,
+      "student_teacher_ratio": 20
+    },
+    {
+      "id": 2,
+      "name": "Sakon I Primary School",
+      "district_code": "ARU",
+      "ward": "Sokon I",
+      "lat": -3.366,
+      "lng": 36.689,
+      "student_capacity": 900,
+      "teachers": 35,
+      "student_teacher_ratio": 25.7
+    },
+    {
+      "id": 3,
+      "name": "Usa River Secondary School",
+      "district_code": "MER",
+      "ward": "Usa River",
+      "lat": -3.365,
+      "lng": 36.853,
+      "student_capacity": 800,
+      "teachers": 32,
+      "student_teacher_ratio": 25
+    },
+    {
+      "id": 4,
+      "name": "Karatu High School",
+      "district_code": "KAR",
+      "ward": "Karatu",
+      "lat": -3.335,
+      "lng": 35.67,
+      "student_capacity": 1000,
+      "teachers": 38,
+      "student_teacher_ratio": 26.3
+    },
+    {
+      "id": 5,
+      "name": "Mto wa Mbu Primary School",
+      "district_code": "MON",
+      "ward": "Mto wa Mbu",
+      "lat": -3.3667,
+      "lng": 35.85,
+      "student_capacity": 700,
+      "teachers": 24,
+      "student_teacher_ratio": 29.2
+    }
+  ],
+  "health_facilities": [
+    {
+      "id": 1,
+      "name": "Mount Meru Regional Hospital",
+      "district_code": "ARU",
+      "ward": "Sekei",
+      "lat": -3.3696,
+      "lng": 36.696,
+      "bed_capacity": 450,
+      "specialized_services": [
+        "Emergency",
+        "Maternal Health",
+        "Pediatrics",
+        "Surgery",
+        "Infectious Diseases"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Meru District Hospital",
+      "district_code": "MER",
+      "ward": "Usa River",
+      "lat": -3.3655,
+      "lng": 36.8555,
+      "bed_capacity": 180,
+      "specialized_services": [
+        "Maternal Health",
+        "Outpatient",
+        "HIV Care"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Karatu District Hospital",
+      "district_code": "KAR",
+      "ward": "Karatu",
+      "lat": -3.334,
+      "lng": 35.668,
+      "bed_capacity": 210,
+      "specialized_services": [
+        "Emergency",
+        "Maternal Health",
+        "Malaria Treatment"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Monduli District Hospital",
+      "district_code": "MON",
+      "ward": "Monduli Juu",
+      "lat": -3.3,
+      "lng": 36.45,
+      "bed_capacity": 160,
+      "specialized_services": [
+        "Outpatient",
+        "Maternal Health",
+        "Community Health Outreach"
+      ]
+    }
+  ],
+  "population_stats": [
+    {
+      "id": 1,
+      "district_code": "ARU",
+      "ward": "Sokon I",
+      "year": 2025,
+      "population": 32000,
+      "area_km2": 12.5,
+      "density_per_km2": 2560,
+      "annual_growth_rate": 0.035
+    },
+    {
+      "id": 2,
+      "district_code": "ARU",
+      "ward": "Sekei",
+      "year": 2025,
+      "population": 28000,
+      "area_km2": 10.2,
+      "density_per_km2": 2745,
+      "annual_growth_rate": 0.032
+    },
+    {
+      "id": 3,
+      "district_code": "MER",
+      "ward": "Usa River",
+      "year": 2025,
+      "population": 26000,
+      "area_km2": 40,
+      "density_per_km2": 650,
+      "annual_growth_rate": 0.038
+    },
+    {
+      "id": 4,
+      "district_code": "KAR",
+      "ward": "Karatu",
+      "year": 2025,
+      "population": 21000,
+      "area_km2": 35,
+      "density_per_km2": 600,
+      "annual_growth_rate": 0.041
+    },
+    {
+      "id": 5,
+      "district_code": "MON",
+      "ward": "Monduli Juu",
+      "year": 2025,
+      "population": 17000,
+      "area_km2": 50,
+      "density_per_km2": 340,
+      "annual_growth_rate": 0.029
+    },
+    {
+      "id": 6,
+      "district_code": "MON",
+      "ward": "Mto wa Mbu",
+      "year": 2025,
+      "population": 23000,
+      "area_km2": 30,
+      "density_per_km2": 767,
+      "annual_growth_rate": 0.043
+    }
+  ],
+  "weather_logs": [
+    {
+      "id": 1,
+      "district_code": "ARU",
+      "ward": "Sekei",
+      "timestamp": "2026-03-07T09:00:00Z",
+      "temperature_c": 21.5,
+      "rain_mm": 3.2,
+      "humidity_pct": 76,
+      "condition": "light rain"
+    },
+    {
+      "id": 2,
+      "district_code": "ARU",
+      "ward": "Sokon I",
+      "timestamp": "2026-03-07T09:00:00Z",
+      "temperature_c": 22,
+      "rain_mm": 2.5,
+      "humidity_pct": 74,
+      "condition": "cloudy"
+    },
+    {
+      "id": 3,
+      "district_code": "MER",
+      "ward": "Usa River",
+      "timestamp": "2026-03-07T09:00:00Z",
+      "temperature_c": 20,
+      "rain_mm": 5.5,
+      "humidity_pct": 82,
+      "condition": "moderate rain"
+    },
+    {
+      "id": 4,
+      "district_code": "KAR",
+      "ward": "Karatu",
+      "timestamp": "2026-03-07T09:00:00Z",
+      "temperature_c": 18.5,
+      "rain_mm": 7,
+      "humidity_pct": 88,
+      "condition": "heavy rain"
+    },
+    {
+      "id": 5,
+      "district_code": "MON",
+      "ward": "Mto wa Mbu",
+      "timestamp": "2026-03-07T09:00:00Z",
+      "temperature_c": 23,
+      "rain_mm": 6,
+      "humidity_pct": 85,
+      "condition": "moderate rain"
+    }
+  ]
+}
+
